@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('pull from scm') {
             steps {
-            git credentialsId: 'myprj-git-cred', url: 'https://github.com/salonibhatnagar/Jenkins-interation-librarymgmt.git'
+            git credentialsId: 'myprj-git-cred', url: 'https://github.com/salonibhatnagar/jenkins-tomcat-librayapp.git'
             }
         }
         stage('build it') {
