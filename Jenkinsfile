@@ -1,4 +1,9 @@
 pipeline {
+   environment {
+        registry = "52.149.220.193:8085/library"
+        registryCredential = 'nexus-hub'
+        dockerImage = ''
+    }
     agent any 
     // agent is where my pipeline will be eexecuted
     tools {
@@ -8,59 +13,29 @@ pipeline {
     stages {
         stage('pull from scm') {
             steps {
-            git credentialsId: 'myprj-git-cred', url: 'https://github.com/salonibhatnagar/jenkins-tomcat-librayapp.git'
+            git credentialsId: 'myprj-git-cred', url: 'https://github.com/salonibhatnagar/Jenkins-interation-librarymgmt.git'
             }
         }
-        stage('mvn build') {
+        stage('build it') {
             steps {
-            sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            sh 'mvn clean package'
             }
-            post {
-                //if maven build was able to run the test we will create a test report and archive the jar in local machine
-                success {
-                    junit '**/target/surefire-reports/*.xml'
-                    archiveArtifacts 'target/*.jar'
+        }
+        stage('docker image') {
+            steps {
+                script {
+                  dockerImage=docker.build registry + ":$BUILD_NUMBER"
                 }
             }
         }
-        stage('checkstyle') {
+        stage('docker push') {
             steps {
-                sh 'mvn checkstyle:checkstyle'
+                script {
+                  docker.withRegistry('http://52.149.220.193:8085',registryCredential) {
+                      dockerImage.push()
+                  }
+                }
             }
         }
-         stage('checkstyle Report') {
-            steps {
-                recordIssues(tools: [checkStyle(pattern: 'target/checkstyle-result.xml')])
-            }
-        }
-        stage('code coverage') {
-            steps {
-                jacoco()
-            }
-        }
-        stage('sonar scanner') {
-            steps {
-           sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=library-management-app -Dsonar.host.url=http://13.92.117.147:9000 -Dsonar.login=sqp_4a16dea97bba7e3b89e8a04ac3d03b4723e4fa39'
-            }
-        }
-                stage ('Nexus upload')  {
-          steps {
-          nexusArtifactUploader(
-          nexusVersion: 'nexus3',
-          protocol: 'http',
-          nexusUrl: '52.149.220.193:8081',
-          groupId: 'librarymanagementsystem',
-          version: '0.0.1-SNAPSHOT',
-          repository: 'maven-snapshots',
-          credentialsId: 'nexus',
-          artifacts: [
-            [artifactId: 'librarymanagementsystem',
-             classifier: '',
-             file: 'target/librarymanagementsystem-0.0.1-SNAPSHOT.jar',
-             type: 'jar']
-        ]
-        )
-          }
-     }
     }
 }
