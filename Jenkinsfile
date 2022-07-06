@@ -31,7 +31,7 @@ pipeline {
         stage('docker push') {
             steps {
                 script {
-                  docker.withRegistry('https://52.149.220.193:8085',registryCredential) {
+                  docker.withRegistry('http://52.149.220.193:8085',registryCredential) {
                       dockerImage.push()
                   }
                 }
