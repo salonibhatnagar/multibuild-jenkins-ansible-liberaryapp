@@ -1,0 +1,55 @@
+---
+- hosts: tomcat
+  become: yes
+  vars:
+    tomcat_download_url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.22/bin/apache-tomcat-10.0.22.tar.gz
+    tomcat_download_location: /opt/tomcat10/i
+    remote_jarfile: /jenkins-ansible-sapient/target/websocket-demo-0.0.1-SNAPSHOT.jar
+    remote_webapps: /opt/tomcat10/tomcat/webapps/
+  tasks:
+    - name: update
+      apt: update_cache=yes   
+      ignore_errors: yes 
+   
+    - name: Installating JDK.
+      apt: name=default-jdk state=latest
+
+    - name: Adding Group and user for Tomcat.
+      shell: groupadd tomcat && useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+      
+    - name: Installating curl.
+      apt: name=curl state=latest
+      
+    - name: Create a tomcat directory
+      file:
+        path: "{{tomcat_download_location}}"
+        owner: tomcat
+        group: tomcat
+        mode: 755
+        recurse: yes
+    - name: Download and unarchive tomcat10
+      unarchive:
+        src: "{{tomcat_download_url}}"
+        dest: "{{tomcat_download_location}}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+    - name: Change ownership of tomcat directory
+      file:
+        path: "{{tomcat_download_location}}"
+        owner: tomcat
+        group: tomcat
+        mode: "u+rwx,g+rx,o=rx"
+        recurse: yes
+        state: directory             
+
+    - name: download foo.conf
+      get_url:
+        url: https://raw.githubusercontent.com/aftab70/Apache_Tomcat/master/tomcat_services
+        dest: /etc/systemd/system/tomcat.service
+    - name: Starting Apache Tomcat service
+      service:
+        daemon_reload: yes
+        name: tomcat
+        state: started
+        enabled: yes
+      when: ansible_service_mgr == "systemd"
