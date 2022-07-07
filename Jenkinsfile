@@ -1,6 +1,6 @@
 pipeline {
    environment {
-        registry = "52.149.220.193:8085/library"
+        registry = "168.61.44.210:8085/library"
         registryCredential = 'nexus-hub'
         dockerImage = ''
     }
@@ -31,7 +31,7 @@ pipeline {
         stage('docker push') {
             steps {
                 script {
-                  docker.withRegistry('http://52.149.220.193:8085',registryCredential) {
+                  docker.withRegistry('http://168.61.44.210:8085',registryCredential) {
                       dockerImage.push()
                   }
                 }
