@@ -44,8 +44,8 @@ pipeline {
             sshagent(['jenkins-ansible']) {
                sh """
                scp -o StrictHostKeyChecking=no target/librarymanagementsystem-0.0.1-SNAPSHOT.jar root@tomcat:/opt/tomcat10/i/webapps
-               ssh root@tomcat opt/tomcat10/i/bin/shutdown.sh
-               ssh root@tomcat opt/tomcat10/i/bin/startup.sh
+               ssh root@tomcat /opt/tomcat10/i/bin/shutdown.sh
+               ssh root@tomcat /opt/tomcat10/i/bin/startup.sh
                """
            }
       }
