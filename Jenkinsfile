@@ -39,6 +39,17 @@ pipeline {
                 // bat "mvn -Dmaven.test.failure.ignore=true clean package"
             } 
         }
+        stage("deploy-jar"){
+            steps{
+            sshagent(['jenkins-ansible']) {
+               sh """
+               scp -o StrictHostKeyChecking=no target/librarymanagementsystem-0.0.1-SNAPSHOT.jar root@tomcat:/usr/share/tomcat/webapps
+               ssh root@tomcat /usr/share/tomcat/bin/shutdown.sh
+               ssh root@tomcat /usr/share/tomcat/bin/startup.sh
+               """
+           }
+      }
+}
         }
     }
 
