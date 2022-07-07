@@ -43,9 +43,9 @@ pipeline {
             steps{
             sshagent(['jenkins-ansible']) {
                sh """
-               scp -o StrictHostKeyChecking=no target/librarymanagementsystem-0.0.1-SNAPSHOT.jar root@tomcat:/usr/share/tomcat/webapps
-               ssh root@tomcat /usr/share/tomcat/bin/shutdown.sh
-               ssh root@tomcat /usr/share/tomcat/bin/startup.sh
+               scp -o StrictHostKeyChecking=no target/librarymanagementsystem-0.0.1-SNAPSHOT.jar root@tomcat:/opt/tomcat10/i/webapps
+               ssh root@tomcat opt/tomcat10/i/bin/shutdown.sh
+               ssh root@tomcat opt/tomcat10/i/bin/startup.sh
                """
            }
       }
