@@ -31,7 +31,7 @@ pipeline {
         stage('Deploy to aks') {
             steps {
                 script {
-                        kubeconfig(credentialsId: 'k8s-cred', serverUrl: 'https://aksdemo1-dns-7110ba10.hcp.eastus.azmk8s.io:443') {
+                        kubeconfig(credentialsId: 'k8s-cred', serverUrl: 'https://aksdemo1-dns-061e18bf.hcp.eastus.azmk8s.io:443') {
                         sh 'kubectl apply -f pv.yml'
                         sh 'kubectl apply -f pvc.yml'
                         sh 'kubectl apply -f configmap.yml'
