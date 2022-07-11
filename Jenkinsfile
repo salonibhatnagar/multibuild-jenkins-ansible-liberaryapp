@@ -50,6 +50,16 @@ pipeline {
            }
       }
 }
+        stage('ansible deploy docker') {
+           steps {
+                // Get some code from a GitHub repository
+                ansiblePlaybook credentialsId: 'jenkins-ansible', disableHostKeyChecking: true, inventory: 'dev.inv', playbook: 'docker.yml'
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            } 
+        }
+        
         }
     }
 
