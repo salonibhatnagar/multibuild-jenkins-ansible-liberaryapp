@@ -40,7 +40,7 @@ pipeline {
         }
         stage('sonar scanner') {
             steps {
-           sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=library-management-app -Dsonar.host.url=http://20.25.120.122:9000 -Dsonar.login=sqp_4a16dea97bba7e3b89e8a04ac3d03b4723e4fa39'
+           sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=library-management-app -Dsonar.host.url=http://20.85.236.120:9000 -Dsonar.login=sqp_4a16dea97bba7e3b89e8a04ac3d03b4723e4fa39'
             }
         }
                 stage ('Nexus upload')  {
@@ -48,7 +48,7 @@ pipeline {
           nexusArtifactUploader(
           nexusVersion: 'nexus3',
           protocol: 'http',
-          nexusUrl: '20.25.120.122:8081',
+          nexusUrl: '20.124.243.81:8081',
           groupId: 'librarymanagementsystem',
           version: '0.0.1-SNAPSHOT',
           repository: 'maven-snapshots',
